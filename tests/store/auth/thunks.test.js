@@ -4,7 +4,7 @@ import {
 	registerUserWithEmailPassword,
 	singInWithGoogle,
 } from '../../../src/firebase/providers';
-import {checkingCredentials, login, logout} from '../../../src/store/auth';
+import { checkingCredentials, login, logout } from '../../../src/store/auth';
 import {
 	checkingAuthentication,
 	startCreatingUserWithEmailPassword,
@@ -12,8 +12,8 @@ import {
 	startLoginWithEmailPassword,
 	startLogout,
 } from '../../../src/store/auth/thunks';
-import {clearNotesLogout} from '../../../src/store/journal';
-import {demoUser} from '../../fixtures/authFixtures';
+import { clearNotesLogout } from '../../../src/store/journal';
+import { demoUser } from '../../fixtures/authFixtures';
 
 jest.mock('../../../src/firebase/providers');
 
@@ -26,7 +26,7 @@ describe('Pruebas en AuthThunks', () => {
 	});
 
 	test('startGoogleSignIn debe de llamar checkingCredentials y login', async () => {
-		const loginData = {ok: true, ...demoUser};
+		const loginData = { ok: true, ...demoUser };
 		await singInWithGoogle.mockResolvedValue(loginData);
 		await startGoogleSignIn()(dispatch);
 		expect(dispatch).toHaveBeenCalledWith(checkingCredentials());
@@ -34,25 +34,29 @@ describe('Pruebas en AuthThunks', () => {
 	});
 
 	test('startGoogleSignIn debe de llamar checkingCredentials y logout con el mensaje de error', async () => {
-		const loginData = {ok: false, errorMessage: 'Error en Google'};
+		const loginData = { ok: false, errorMessage: 'Error en Google' };
 		await singInWithGoogle.mockResolvedValue(loginData);
 		await startGoogleSignIn()(dispatch);
 		expect(dispatch).toHaveBeenCalledWith(checkingCredentials());
 		expect(dispatch).toHaveBeenCalledWith(logout(loginData.errorMessage));
 	});
 
-  test('startCreatingUserWithEmailPassword debe de llamar checkingCredencials y login', async() => {
-    const loginData = {ok: true, ...demoUser};
-		const formData = {email: demoUser.email, password: '123456', displayName: 'demoUser'};
+	test('startCreatingUserWithEmailPassword debe de llamar checkingCredencials y login', async () => {
+		const loginData = { ok: true, ...demoUser };
+		const formData = {
+			email: demoUser.email,
+			password: '123456',
+			displayName: 'demoUser',
+		};
 		await registerUserWithEmailPassword.mockResolvedValue(loginData);
 		await startCreatingUserWithEmailPassword(formData)(dispatch);
 		expect(dispatch).toHaveBeenCalledWith(checkingCredentials());
 		expect(dispatch).toHaveBeenCalledWith(login(loginData));
-  });
+	});
 
 	test('startLoginWithEmailPassword debe de llamar checkingCredencials y login', async () => {
-		const loginData = {ok: true, ...demoUser};
-		const formData = {email: demoUser.email, password: '123456'};
+		const loginData = { ok: true, ...demoUser };
+		const formData = { email: demoUser.email, password: '123456' };
 		await loginWithEmailPassword.mockResolvedValue(loginData);
 		await startLoginWithEmailPassword(formData)(dispatch);
 		expect(dispatch).toHaveBeenCalledWith(checkingCredentials());

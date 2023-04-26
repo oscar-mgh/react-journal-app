@@ -1,25 +1,25 @@
-import {fireEvent, render, screen} from '@testing-library/react';
-import {Provider} from 'react-redux';
-import {configureStore} from '@reduxjs/toolkit';
-import {MemoryRouter} from 'react-router-dom';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { MemoryRouter } from 'react-router-dom';
 
-import {LoginPage} from '../../../src/auth/pages/LoginPage';
-import {authSlice} from '../../../src/store/auth';
-import {startGoogleSignIn} from '../../../src/store/auth/thunks';
-import {notAuthenticatedState} from '../../fixtures/authFixtures';
+import { LoginPage } from '../../../src/auth/pages/LoginPage';
+import { authSlice } from '../../../src/store/auth';
+import { startGoogleSignIn } from '../../../src/store/auth/thunks';
+import { notAuthenticatedState } from '../../fixtures/authFixtures';
 
 const mockStartGoogleSignIn = jest.fn();
 const mockStartLoginWithEmailPassword = jest.fn();
 jest.mock('../../../src/store/auth/thunks', () => ({
 	startGoogleSignIn: () => mockStartGoogleSignIn,
-	startLoginWithEmailPassword: ({email, password}) => {
-		return () => mockStartLoginWithEmailPassword({email, password});
+	startLoginWithEmailPassword: ({ email, password }) => {
+		return () => mockStartLoginWithEmailPassword({ email, password });
 	},
 }));
 
 jest.mock('react-redux', () => ({
 	...jest.requireActual('react-redux'),
-	useDispatch: () => (fn) => fn(),
+	useDispatch: () => fn => fn(),
 }));
 
 console.log(mockStartGoogleSignIn);
@@ -42,7 +42,7 @@ describe('Pruebas en <LoginPage />', () => {
 				<MemoryRouter>
 					<LoginPage />
 				</MemoryRouter>
-			</Provider>,
+			</Provider>
 		);
 		expect(screen.getAllByText('Login').length).toBeGreaterThanOrEqual(1);
 	});
@@ -53,7 +53,7 @@ describe('Pruebas en <LoginPage />', () => {
 				<MemoryRouter>
 					<LoginPage />
 				</MemoryRouter>
-			</Provider>,
+			</Provider>
 		);
 		// console.log(store.getState());
 		const googleBtn = screen.getByLabelText('google-btn');
@@ -70,12 +70,14 @@ describe('Pruebas en <LoginPage />', () => {
 				<MemoryRouter>
 					<LoginPage />
 				</MemoryRouter>
-			</Provider>,
+			</Provider>
 		);
-		const emailField = screen.getByRole('textbox', {name: 'Correo'});
-		fireEvent.change(emailField, {target: {name: 'email', value: email}});
+		const emailField = screen.getByRole('textbox', { name: 'Correo' });
+		fireEvent.change(emailField, { target: { name: 'email', value: email } });
 		const passwordField = screen.getByLabelText('password');
-		fireEvent.change(passwordField, {target: {name: 'password', value: password}});
+		fireEvent.change(passwordField, {
+			target: { name: 'password', value: password },
+		});
 		const loginForm = screen.getByTestId('form');
 		fireEvent.submit(loginForm);
 		expect(mockStartLoginWithEmailPassword).toHaveBeenCalledWith({
